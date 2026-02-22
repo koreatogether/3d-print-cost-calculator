@@ -11,7 +11,6 @@
     --tip-border: #3498db;
     --input-bg: #fff;
     --input-text: #333;
-    --highlight-group-bg: #fff3cd;
 }
 
 body.dark-mode {
@@ -27,7 +26,6 @@ body.dark-mode {
     --tip-border: #2980b9;
     --input-bg: #2c2c2c;
     --input-text: #e0e0e0;
-    --highlight-group-bg: #3a2a00;
 }
 
 body {
@@ -41,9 +39,7 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
     color: var(--text-color);
 }
 
@@ -61,7 +57,7 @@ h3 {
     background-color: var(--card-bg);
     color: var(--text-color);
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     font-weight: bold;
     transition: background-color 0.3s, color 0.3s;
 }
@@ -80,7 +76,7 @@ h3 {
     background: var(--card-bg);
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     flex: 1;
     min-width: 300px;
     transition: background-color 0.3s;
@@ -91,19 +87,6 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px;
-    border-radius: 4px;
-}
-
-.highlight-group {
-    background-color: var(--highlight-group-bg);
-    border: 1px solid #ffeeba;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-body.dark-mode .highlight-group {
-    border-color: #5c4300;
 }
 
 label {
@@ -132,21 +115,14 @@ table {
     margin-top: 10px;
 }
 
-th,
-td {
+th, td {
     padding: 10px;
     border-bottom: 1px solid var(--table-border);
-    text-align: right;
-}
-
-th:first-child,
-td:first-child {
     text-align: left;
 }
 
 th {
     background-color: var(--th-bg);
-    text-align: center;
 }
 
 .total-row {
@@ -165,7 +141,7 @@ th {
     background: var(--card-bg);
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: background-color 0.3s;
 }
 
