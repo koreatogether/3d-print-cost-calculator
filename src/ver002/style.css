@@ -130,8 +130,6 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    table-layout: fixed;
-    /* 열 너비 고정 */
 }
 
 th,
@@ -139,15 +137,11 @@ td {
     padding: 10px;
     border-bottom: 1px solid var(--table-border);
     text-align: right;
-    font-variant-numeric: tabular-nums;
-    /* 숫자 폭을 동일하게 맞춰 정렬 향상 */
 }
 
 th:first-child,
 td:first-child {
     text-align: left;
-    width: 40%;
-    /* 항목 이름 열 너비 지정 */
 }
 
 th {

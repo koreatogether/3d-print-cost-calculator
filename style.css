@@ -12,6 +12,8 @@
     --input-bg: #fff;
     --input-text: #333;
     --highlight-group-bg: #fff3cd;
+    --table-stripe-bg: #e8f5e9;
+    /* 짝수 행 배경색 (라이트 모드 - 짙은 녹색) */
 }
 
 body.dark-mode {
@@ -28,6 +30,8 @@ body.dark-mode {
     --input-bg: #2c2c2c;
     --input-text: #e0e0e0;
     --highlight-group-bg: #3a2a00;
+    --table-stripe-bg: #1b3320;
+    /* 짝수 행 배경색 (다크 모드 - 짙은 녹색) */
 }
 
 body {
@@ -130,6 +134,8 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    table-layout: fixed;
+    /* 열 너비 고정 */
 }
 
 th,
@@ -137,11 +143,15 @@ td {
     padding: 10px;
     border-bottom: 1px solid var(--table-border);
     text-align: right;
+    font-variant-numeric: tabular-nums;
+    /* 숫자 폭을 동일하게 맞춰 정렬 향상 */
 }
 
 th:first-child,
 td:first-child {
     text-align: left;
+    width: 40%;
+    /* 항목 이름 열 너비 지정 */
 }
 
 th {
@@ -149,9 +159,15 @@ th {
     text-align: center;
 }
 
+/* 테이블 짝수 행(2, 4, 6...)에 옅은 배경색 적용 (얼룩말 무늬) */
+tr:nth-child(even) {
+    background-color: var(--table-stripe-bg);
+}
+
 .total-row {
     font-weight: bold;
-    background-color: var(--total-row-bg);
+    background-color: var(--total-row-bg) !important;
+    /* 얼룩말 무늬보다 우선 적용 */
 }
 
 .highlight {
