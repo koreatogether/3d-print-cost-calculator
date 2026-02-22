@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 출력 원가 계산기 (다중 출력 지원)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <div class="header-container">
+        <h1>🧾 3D 출력 원가 계산기 <span style="font-size: 0.5em; color: gray;">v0.0.3</span></h1>
+        <button id="darkModeToggle" onclick="toggleDarkMode()">🌙 다크 모드</button>
+    </div>
+
+    <div class="container">
+        <!-- 입력 폼 -->
+        <div class="card">
+            <h2>📊 입력값 설정 (1회 출력 기준)</h2>
+
+            <div class="form-group highlight-group">
+                <label>1회 출력 개수 (개)</label>
+                <input type="text" id="printQuantity" value="1" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>총 필라멘트 사용량 (g)</label>
+                <input type="text" id="filamentUsage" value="26.98" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>PLA 단가 (원/kg)</label>
+                <input type="text" id="plaPrice" value="25,000" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>총 출력 시간 (시간)</label>
+                <input type="text" id="printTime" value="1" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>전기 요금 (원/kWh)</label>
+                <input type="text" id="elecRate" value="130" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>프린터 소비전력 (W)</label>
+                <input type="text" id="powerUsage" value="220" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>프린터 가격 (원)</label>
+                <input type="text" id="printerPrice" value="1,200,000" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>프린터 수명 (시간)</label>
+                <input type="text" id="printerLife" value="5,000" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>노즐 가격 (원)</label>
+                <input type="text" id="nozzlePrice" value="10,000" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>노즐 수명 (시간)</label>
+                <input type="text" id="nozzleLife" value="1,000" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>AMS 가격 (원)</label>
+                <input type="text" id="amsPrice" value="200,000" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>AMS 수명 (시간)</label>
+                <input type="text" id="amsLife" value="5,000" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>기타 소모품 (원/회)</label>
+                <input type="text" id="otherCost" value="50" oninput="formatInput(this); calculate()">
+            </div>
+        </div>
+
+        <!-- 판매 추가 비용 입력 폼 -->
+        <div class="card">
+            <h2>🛒 판매 추가 비용 입력 (1회 출력 기준)</h2>
+            <div class="form-group">
+                <label>총 인건비 (원/회)</label>
+                <input type="text" id="laborCost" value="1,600" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>총 포장/부자재 (원/회)</label>
+                <input type="text" id="packageCost" value="500" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>실패 할증률 (%)</label>
+                <input type="text" id="lossRate" value="10" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>총 모델링/디자인 (원/회)</label>
+                <input type="text" id="designCost" value="0" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>총 마케팅/CS (원/회)</label>
+                <input type="text" id="marketingCost" value="0" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>플랫폼 수수료율 (%)</label>
+                <input type="text" id="platformFeeRate" value="5" oninput="formatInput(this); calculate()">
+            </div>
+            <div class="form-group">
+                <label>목표 마진율 (%)</label>
+                <input type="text" id="marginRate" value="50" oninput="formatInput(this); calculate()">
+            </div>
+        </div>
+
+        <!-- 결과 출력 -->
+        <div class="card" style="flex-basis: 100%;">
+            <h2>🔢 원가 항목별 계산 결과</h2>
+            <table>
+                <tr>
+                    <th>항목</th>
+                    <th>1회 총 금액</th>
+                    <th>개당 금액</th>
+                </tr>
+                <tr>
+                    <td>💧 필라멘트</td>
+                    <td id="resFilament">0원</td>
+                    <td id="resFilamentPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>⚡ 전기</td>
+                    <td id="resElec">0원</td>
+                    <td id="resElecPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>🖨️ 프린터 감가상각</td>
+                    <td id="resPrinter">0원</td>
+                    <td id="resPrinterPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>🔩 노즐 감가상각</td>
+                    <td id="resNozzle">0원</td>
+                    <td id="resNozzlePerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>📦 AMS 감가상각</td>
+                    <td id="resAms">0원</td>
+                    <td id="resAmsPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>🔧 소모품 기타</td>
+                    <td id="resOther">0원</td>
+                    <td id="resOtherPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>📉 실패 할증 비용</td>
+                    <td id="resLoss">0원</td>
+                    <td id="resLossPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>🧑‍🔧 인건비</td>
+                    <td id="resLabor">0원</td>
+                    <td id="resLaborPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>📦 포장/부자재</td>
+                    <td id="resPackage">0원</td>
+                    <td id="resPackagePerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>🎨 모델링/디자인</td>
+                    <td id="resDesign">0원</td>
+                    <td id="resDesignPerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>💬 마케팅/CS</td>
+                    <td id="resMarketing">0원</td>
+                    <td id="resMarketingPerItem">0원</td>
+                </tr>
+                <tr class="total-row">
+                    <td>총 원가 합계</td>
+                    <td id="resTotalCost">0원</td>
+                    <td id="resTotalCostPerItem">0원</td>
+                </tr>
+            </table>
+
+            <h2 style="margin-top: 30px;">💰 판매가 계산</h2>
+            <table>
+                <tr>
+                    <th>항목</th>
+                    <th>1회 총 금액</th>
+                    <th>개당 금액</th>
+                </tr>
+                <tr>
+                    <td>📌 총 원가</td>
+                    <td id="resTotalCost2">0원</td>
+                    <td id="resTotalCost2PerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>🏪 플랫폼 수수료</td>
+                    <td id="resPlatformFee">0원</td>
+                    <td id="resPlatformFeePerItem">0원</td>
+                </tr>
+                <tr>
+                    <td>💵 순수 마진 금액</td>
+                    <td id="resMarginAmt">0원</td>
+                    <td id="resMarginAmtPerItem">0원</td>
+                </tr>
+                <tr class="total-row">
+                    <td>🏷️ 판매가 (VAT 전)</td>
+                    <td id="resSellPriceEx">0원</td>
+                    <td id="resSellPriceExPerItem">0원</td>
+                </tr>
+                <tr class="total-row">
+                    <td>🏷️ 판매가 (VAT 포함)</td>
+                    <td class="highlight" id="resSellPriceInc">0원</td>
+                    <td class="highlight" id="resSellPriceIncPerItem">0원</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>🚀 다중 출력 시 고정비 절감 효과 (Batch Production)</h2>
+        <p>작은 출력물을 하나의 프린터 베드에 여러 개 올려서 한 번에 출력할 때, 고정비(인건비, 장비 감가상각비 등)에 미치는 영향입니다.</p>
+
+        <h3>1. 🧑‍🔧 인건비 (가장 큰 절감 효과)</h3>
+        <ul>
+            <li><strong>준비 작업:</strong> 슬라이싱, SD카드 이동, 프린터 베드 레벨링, 출력 시작 버튼 누르기 등은 1개를 뽑든 10개를 뽑든 <strong>동일한
+                    시간</strong>이 소요됩니다.</li>
+            <li><strong>후가공 작업:</strong> 베드에서 떼어내는 작업 시간은 약간 증가하지만, 1개씩 10번 떼어내는 것보다 한 번에 10개를 떼어내는 것이 훨씬 빠릅니다.</li>
+            <li><em>결과:</em> 한 번에 여러 개를 출력하면 <strong>개당 인건비가 획기적으로 감소</strong>합니다.</li>
+        </ul>
+
+        <h3>2. 🖨️ 장비 감가상각비 및 전기세</h3>
+        <ul>
+            <li>1개를 10번 따로 출력하면 매번 베드와 노즐을 가열(Heating)해야 하므로 전기세와 시간이 낭비됩니다.</li>
+            <li>여러 개를 한 번에 출력하면 가열 시간이 1번으로 줄어들고, 헤드 이동 경로가 최적화되어 <strong>전체 출력 시간이 단축</strong>됩니다.</li>
+            <li><em>결과:</em> 전체 출력 시간이 줄어들기 때문에 개당 장비 감가상각비와 전기세도 소폭 감소합니다.</li>
+        </ul>
+
+        <h3>3. 🎨 기타 고정비 (디자인비, 마케팅비 등)</h3>
+        <ul>
+            <li>디자인 모델링 시간이나 마케팅 비용은 출력 개수와 무관하게 발생하는 매몰 비용 성격이 강합니다.</li>
+            <li><em>결과:</em> 한 번에 많이, 그리고 자주 출력할수록 개당 부담해야 하는 디자인비와 마케팅비가 분산되어 낮아집니다.</li>
+        </ul>
+
+        <div class="tip-box">
+            <strong>💡 다중 출력 계산기 활용 팁</strong><br><br>
+            입력란에 <strong>1회 출력(Batch) 기준의 총량</strong>(총 필라멘트, 총 출력 시간, 총 인건비 등)을 입력하고, <strong>'1회 출력 개수'</strong>를
+            설정하세요. 계산기가 자동으로 1회 총 금액과 <strong>개당 단가</strong>를 나누어 보여줍니다.
+        </div>
+    </div>
+
+</body>
+
+</html>
