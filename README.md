@@ -1,9 +1,10 @@
 # 3D Print Cost Calculator
 
 ### 📦 버전 0.0.3
-- 새로운 기능 추가 및 인터페이스 개선
-- 다크 모드 초기 상태 버그 수정
-- 내부 코드 정리 및 문서 업데이트
+- 새로운 Modern Dark Dashboard 스타일 적용
+- `ver003_sonnet` 리뉴얼 레이아웃 (사이드바, KPI 카드, 도넛 차트, 비즈니스 설정 패널)
+- `src/ver003` 및 루트 경로에 새 구현으로 덮어쓰기 완료
+- 스크롤 안정화: `body`/`.main-wrapper` 고정 높이, `.content-area` min-height:0 설정
 
 ---
 
